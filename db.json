@@ -4,13 +4,13 @@
       "id": 1,
       "name": "Aloe",
       "image": "./images/aloe.jpg",
-      "price": 15.99
+      "price": "20"
     },
     {
       "id": 2,
       "name": "ZZ Plant",
       "image": "./images/zz-plant.jpg",
-      "price": 25.98
+      "price": "38"
     },
     {
       "id": 3,
@@ -41,6 +41,14 @@
       "name": "Fiddle Leaf Fig",
       "image": "./images/fiddle-leaf-fig.jpg",
       "price": 55
+    },
+    {
+      "name": "Cactus",
+      "image": "https://sc04.alicdn.com/kf/Hef3b5aebb0854e29b4841a7a9bb682684.jpg",
+      "price": "20",
+      "id": 8
     }
-  ]
+  ],
+
+  "users":[]
 }
