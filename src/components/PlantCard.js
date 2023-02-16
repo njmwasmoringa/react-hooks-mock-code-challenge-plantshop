@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { StoreContext } from "../context/store.context";
 
 function PlantCard( { plant, edit } ) {
 
+  const {store, setStore} = useContext(StoreContext);
   const [inStock, setInStock] = useState(true);
 
   function handleInStockEvent(){
@@ -9,7 +11,7 @@ function PlantCard( { plant, edit } ) {
   }
 
   function handleEdit(){
-    edit( plant );
+    setStore( { ...store, plantInEdit:plant } );
   }
 
   return (

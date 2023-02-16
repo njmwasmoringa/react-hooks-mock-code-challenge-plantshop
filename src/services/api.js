@@ -38,4 +38,8 @@ export class Api{
       }).then(resp=>resp.json());
   }
 
+  search(term){
+    return fetch(`${this.host}?q=${term}`).then(resp=>resp.json());
+  }
+
 }

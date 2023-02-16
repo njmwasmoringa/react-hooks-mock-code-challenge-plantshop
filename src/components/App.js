@@ -1,13 +1,16 @@
 import React from "react";
+import { StoreProvider } from "../context/store.context";
 import Header from "./Header";
 import PlantPage from "./PlantPage";
 
 function App() {
   return (
-    <div className="app">
-      <Header />
-      <PlantPage />
-    </div>
+    <StoreProvider>
+      <div className="app">
+        <Header />
+        <PlantPage />
+      </div>
+    </StoreProvider>
   );
 }
 

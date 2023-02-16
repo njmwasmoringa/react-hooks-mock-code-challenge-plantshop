@@ -1,6 +1,30 @@
-import React from "react";
+import React, { useContext, useState } from "react";
+import { StoreContext } from "../context/store.context";
+import { Api } from "../services/api";
+const plantsAPI = new Api("plants");
 
-function Search( {onSearch} ) {
+function Search() {
+
+  const { store, setStore } = useContext(StoreContext);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  function handleSearch(evt) {
+    setSearchTerm(evt.target.value);
+    if (searchTerm == '') {
+      plantsAPI.all.then(plants => setStore({ ...store, plants }));
+    }
+    else {
+      plantsAPI.search(searchTerm).then(searchResult => {
+        setStore({ ...store, plants: searchResult });
+      });
+    }
+  }
+
+  function handleClearSearch(){
+    setSearchTerm('');
+    plantsAPI.all.then(plants => setStore({ ...store, plants }));
+  }
+
   return (
     <div className="searchbar">
       <label htmlFor="search">Search Plants:</label>
@@ -8,8 +32,10 @@ function Search( {onSearch} ) {
         type="text"
         id="search"
         placeholder="Type a name to search..."
-        onChange={(e) => onSearch(e.target.value)}
+        value={searchTerm}
+        onChange={handleSearch}
       />
+      {searchTerm != '' && <button onClick={handleClearSearch}>Clear Search</button>}
     </div>
   );
 }

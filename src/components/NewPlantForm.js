@@ -1,6 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { StoreContext } from "../context/store.context";
+import { Api } from "../services/api";
 
-function NewPlantForm( { editedPlant, updateGrid } ) {
+const plantsAPI = new Api("plants");
+
+function NewPlantForm( ) {
+
+  const {store, setStore} = useContext(StoreContext);
 
   const [ plant, setPlant ] = useState({
     name:'',
@@ -8,7 +14,7 @@ function NewPlantForm( { editedPlant, updateGrid } ) {
     price: 0
   });
 
-  function handlePriceChange( evt ){
+  function handleChange( evt ){
     setPlant({
       ...plant,
       [evt.target.name]: evt.target.value
@@ -18,47 +24,56 @@ function NewPlantForm( { editedPlant, updateGrid } ) {
   function handleSubmit( evt ){
     evt.preventDefault();
 
-    if( editedPlant ){ // we are editing
+    if( store.plantInEdit ){ // we are editing
 
-      fetch(`http://localhost:6001/plants/${plant.id}`, {
-        method:"PATCH",
-        body: JSON.stringify({price: plant.price}),
-        headers:{
-          "Content-Type": "application/json"
-        }
-      }).then(()=>{
-        updateGrid(true)
+      setStore({...store, savingPlant:true});
+
+      plantsAPI.update(store.plantInEdit.id, plant).then((updatedPlant)=>{
+        setStore((prevStore)=>{
+          const newStore = {...prevStore};
+          const i = newStore.plants.findIndex(p=>p.id==store.plantInEdit.id);
+          if(i > -1){
+            newStore.plants[i] = updatedPlant;
+          }
+          return {...newStore, plantInEdit:updatedPlant, savingPlant:false };
+        })
       })
 
     }
     else{ // we are creating
-      fetch(`http://localhost:6001/plants`, {
-        method:"POST",
-        body: JSON.stringify(plant),
-        headers:{
-          "Content-Type": "application/json"
-        }
-      }).then(()=>{
-        updateGrid(true)
+      plantsAPI.create(plant).then((newPlant)=>{
+        setStore({...store, plants:[...store.plants, newPlant]})
       })
     }
 
   }
 
+  function cancelEdit(){
+    setStore({...store, plantInEdit:null});
+  }
+
   useEffect(()=>{
-    if(editedPlant){
-      setPlant( editedPlant );
+    if(store.plantInEdit){
+      setPlant( store.plantInEdit );
     }
-  }, [ editedPlant ])
+    else{
+      setPlant({
+        name:'',
+        image: '',
+        price: 0
+      });
+    }
+  }, [ store ])
   
   return (
     <div className="new-plant-form">
-      <h2>{editedPlant ? "Edit Plant" : "New Plant"}</h2>
+      <h2>{store.plantInEdit ? "Edit Plant" : "New Plant"}</h2>
       <form onSubmit={handleSubmit}>
-        <input type="text" name="name" placeholder="Plant name" onChange={ handlePriceChange } value={ plant.name } />
-        <input type="text" name="image" placeholder="Image URL" onChange={ handlePriceChange } value={plant.image} />
-        <input type="number" name="price" step="0.01" placeholder="Price" onChange={ handlePriceChange } value={plant.price} />
-        <button type="submit">{editedPlant ? "Edit" : "Add"} Plant</button>
+        <input type="text" name="name" placeholder="Plant name" onChange={ handleChange } value={ plant.name } />
+        <input type="text" name="image" placeholder="Image URL" onChange={ handleChange } value={plant.image} />
+        <input type="number" name="price" step="0.01" placeholder="Price" onChange={ handleChange } value={plant.price} />
+        { store.savingPlant ? <div>Saving...</div> : <><button type="submit">{store.plantInEdit ? "Edit" : "Add"} Plant</button>
+        {store.plantInEdit && <button onClick={cancelEdit}> Cancel Edit </button> }</> }
       </form>
     </div>
   );
