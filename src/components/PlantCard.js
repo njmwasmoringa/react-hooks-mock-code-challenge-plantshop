@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { StoreContext } from "../context/store.context";
 
-function PlantCard( { plant, edit } ) {
+function PlantCard( { plant } ) {
 
   const {store, setStore} = useContext(StoreContext);
   const [inStock, setInStock] = useState(true);
