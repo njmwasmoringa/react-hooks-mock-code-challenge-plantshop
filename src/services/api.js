@@ -1,4 +1,8 @@
 
+/**
+ * This Api class is re-userable. 
+ * It contains all the CRUD Operations
+ */
 export class Api{
 
   host="http://localhost:3001/";

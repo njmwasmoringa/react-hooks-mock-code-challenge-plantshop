@@ -6,11 +6,16 @@ function PlantCard( { plant } ) {
   const {store, setStore} = useContext(StoreContext);
   const [inStock, setInStock] = useState(true);
 
+  // Function for handling in stock
   function handleInStockEvent(){
     setInStock( !inStock );
   }
 
   function handleEdit(){
+    /**
+     * use the context to send the plant that is being edited to the 
+     * NewPlantForm component
+     */
     setStore( { ...store, plantInEdit:plant } );
   }
 

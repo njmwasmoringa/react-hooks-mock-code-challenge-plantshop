@@ -5,6 +5,7 @@ import PlantPage from "./PlantPage";
 
 function App() {
   return (
+    /* Include the store provider which makes the store available in all components */
     <StoreProvider>
       <div className="app">
         <Header />
